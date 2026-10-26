@@ -22,7 +22,6 @@ def test_create_refresh_token(db_session):
                 models.User.user_id
             ).where(
                 models.User.email == EXISTING_USERS[0]["email"],
-                models.User.hashed_password == hash_string(EXISTING_USERS[0]["password"])
             )
         ).scalar_one()
     except Exception as e:

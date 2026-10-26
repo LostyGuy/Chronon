@@ -14,6 +14,9 @@ def create_schedule(name: str, description: str, created_by: int, db_session) ->
         )
     ).scalar()
     
+    if not user_id:
+        return False
+    
     group_id: str = services.create_group(name= name, db_session= db_session)
 
     new_schedule = models.Schedule(
@@ -28,22 +31,40 @@ def create_schedule(name: str, description: str, created_by: int, db_session) ->
     db_session.commit()
     return True
 
-def update_schedule(orig_name: str, orig_description: str, new_name: str | None, new_description: str | None, db_session) -> None:
+def update_schedule(new_name: str | None, new_description: str | None, request_from_user: int, schedule_id: int, db_session) -> bool:
     
-    new_name = orig_name if new_name is None else new_name
-    new_description = orig_description if new_description is None else new_description
+    update_values: dict[str, str] = {}
+    if new_name is not None:
+        update_values["name"] = new_name
+    if new_description is not None:
+        update_values["description"] = new_description
+        
+    if update_values == {}:
+        return True
+    
+    user_id = db_session.execute(
+        select(
+            models.User.user_id
+        ).where(
+            models.User.user_id == request_from_user
+        )
+    ).scalar()
+    
+    if not user_id:
+        return False
     
     #---- Values that can be changed: name, desc ----
 
-    db_session.execute(
+    result = db_session.execute(
         update(
             models.Schedule
         ).where(
-            models.Schedule.name == orig_name,
-            models.Schedule.description == orig_description,
-            models.Schedule.created_by == ...,
+            models.Schedule.schedule_id == schedule_id,
+            models.Schedule.created_by == user_id
         ).values(
-            name = new_name,
-            description = new_description,
+            **update_values
         )
     )
+    db_session.commit()
+    
+    return result.rowcount > 0

@@ -16,7 +16,8 @@ TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:15432/postgres"
 EXISTING_USERS = [
         {
         "email": "johndoe@mail.com",
-        "password": "to_be_hashed",
+        # "password": "to_be_hashed",
+        "password": "",
         "device_name": "windows10",
         "ip_address": "255.255.255.254",
     },
@@ -54,15 +55,15 @@ def setup_db():
     #     conn.execute(text("DROP SCHEMA public CASCADE"))
     #     conn.execute(text("CREATE SCHEMA public"))
     #!---- ----
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.drop_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
     session = TestSessionLocal()
     try:
-        roles = roles_data() # Turn to seed.sql?
-        users = users_data() # Turn to seed.sql?
-        session.add_all(roles)
-        session.add_all(users)
-        session.commit()
+        # roles = roles_data() # Turn to seed.sql?
+        # users = users_data() # Turn to seed.sql?
+        # session.add_all(roles)
+        # session.add_all(users)
+        # session.commit()
         yield
     finally:
         session.close()
@@ -71,11 +72,18 @@ def setup_db():
 
 @pytest.fixture
 def db_session(setup_db):
-    with engine.begin() as connection:
-        session = TestSessionLocal(bind=connection)
-        yield session
-        session.close()
-        connection.rollback()
+    connection = engine.connect()
+    transaction = connection.begin()
+    
+    session = TestSessionLocal(
+        bind=connection, join_transaction_mode="create_savepoint"
+    )
+    
+    yield session
+    
+    session.close()
+    transaction.rollback()
+    connection.close()
 
 
 @pytest.fixture

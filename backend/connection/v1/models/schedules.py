@@ -41,6 +41,7 @@ class Schedule(Base):
     updated_at = Column(
         DateTime(timezone= True),
         nullable= True,
+        server_default= func.now(),
     )
 
 

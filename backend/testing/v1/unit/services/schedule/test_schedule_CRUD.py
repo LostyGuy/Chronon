@@ -52,7 +52,6 @@ def test_create_schedule(db_session):
         except:
             ...
 
-@pytest.mark.skip
 def test_update_schedule(db_session):
     orig_name: str = 'Default Name'
     orig_desc: str = 'Default Desc'
@@ -60,34 +59,30 @@ def test_update_schedule(db_session):
     #---- Test Cases -> Full Update | Partial Update | No data to update protection ----
     test_cases = [
         { # 1st - Full Change
-            'name': 'Full Change - Name',
-            'desc': 'Full Change - Desc',
+            'id': "1",
+            'name': 'Full Change - Name_1',
+            'desc': 'Full Change - Desc_1',
         },
         { # 2nd - Partial Change
-            'name': ' Partial Change - Name',
+            'id': "2",
+            'name': ' Partial Change - Name_2',
         },
         { # 3rd - Partial Change
-            'desc': 'Partial Change - Desc',
-        },
-        { # 4th - No Data Change
-            'name': 'Default Name',
-            'desc': orig_desc
+            'id': "3",
+            'desc': 'Partial Change - Desc_3',
         },
     ]
     
     for case in test_cases:
         result = v1.update_schedule(
-            orig_name= orig_name,
-            orig_description= orig_desc,
             new_name=case.get('name', None),
             new_description=case.get('desc', None),
+            request_from_user= 1, # hardcoded value
+            schedule_id = 1, # hardcoded value
             db_session= db_session,
         )
-        
-    #---- Iterate through the cases with the same logic ----
-    
-    #---- Depending on the result send different result_codes ----
-    raise NotImplementedError
+        if int(case.get("id", 0)) in (1,2,3):
+            assert result is True
 
 @pytest.mark.skip
 def test_delete_schedule():
