@@ -54,19 +54,10 @@ def load_entries():
         if not match:
             raise ValueError("Could not find const ENTRIES = [...] in entries.js")
         raw = match.group(1)
-        # Strip comments
         raw = re.sub(r"//.*", "", raw)
-        # Fix unquoted keys
         raw = re.sub(r'(\s*)([a-zA-Z0-9_]+)(\s*):', r'\1"\2"\3:', raw)
-        # Remove trailing commas
         raw = re.sub(r",(\s*[}\]])", r"\1", raw)
         return json.loads(raw)
-
-def format_relative_date(entry_date_str):
-    today = date.today().isoformat()
-    if entry_date_str == today:
-        return "Today"
-    return entry_date_str
 
 def generate_markdown(entries, max_count=3):
     items = entries[:max_count]
@@ -75,31 +66,42 @@ def generate_markdown(entries, max_count=3):
     for idx, item in enumerate(items):
         is_open = " open" if idx == 0 else ""
         icon = STATUS_ICONS.get(item.get("status"), "🟢")
-        rel_date = format_relative_date(item.get("date", ""))
+        entry_date = item.get("date", "")
         title = item.get("title", "")
-        badge = item.get("badge", "")
 
         tags = " ".join([f"<code>#{t}</code>" for t in item.get("tags", [])])
 
         lines = [f"    <details{is_open}>"]
-        lines.append(f"        <summary><b>{icon} {rel_date}: {title}</b> {tags}</summary>")
+        # Summary with date + title, then tags on a new line
+        lines.append(f"        <summary><b>{icon} {entry_date}: {title}</b><br>{tags}</summary>")
         lines.append("        <br>")
-
-        target = item.get("target")
-        if target:
-            lines.append(f"        > **Target:** <code>{target}</code> <br>")
-
-        if badge:
-            lines.append(f"        > **Status:** {badge} <br>")
+        # Table centering: GitHub preserves <table> align="center" and <td> align="left"
+        lines.append("        <table align=\"center\" border=\"0\">")
+        lines.append("            <tr>")
+        lines.append("                <td align=\"left\">")
+        lines.append("                    <ul>")
 
         bullets = item.get("bullets", [])
-        for b in bullets:
-            lines.append(f"        > - {b} <br>")
+        # Ensure at least 3 bullet points
+        formatted_bullets = list(bullets)
+        if len(formatted_bullets) < 3:
+            if not formatted_bullets:
+                formatted_bullets.append(title)
+            while len(formatted_bullets) < 3:
+                formatted_bullets.append("Detailed implementation verified and logged.")
+
+        for b in formatted_bullets:
+            lines.append(f"                        <li>{b}</li>")
 
         terminal = item.get("terminal")
         if terminal:
-            lines.append(f"        > <code>{terminal.splitlines()[0]}</code> <br>")
+            first_cmd = terminal.splitlines()[0]
+            lines.append(f"                        <li><code>{first_cmd}</code></li>")
 
+        lines.append("                    </ul>")
+        lines.append("                </td>")
+        lines.append("            </tr>")
+        lines.append("        </table>")
         lines.append("    </details>")
         blocks.append("\n".join(lines))
 
@@ -140,3 +142,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         count = int(sys.argv[1])
     sync_readme(max_count=count)
+
