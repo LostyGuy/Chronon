@@ -122,33 +122,28 @@
     <br>
     <!-- DEVLOG_ENTRIES_START -->
     <details open>
-        <summary><b>🔵 Today: Implemented automated README sync</b> <code>#automation</code> <code>#devlog</code></summary>
+        <summary><b>🟣 2026-11-01: Devlog ready to go</b><br><code>#devlog</code></summary>
         <br>
-        > **Target:** <code>devlog/sync_readme.py</code> <br>
-        > **Status:** Auto-Sync <br>
-        > - Auto syncs top 3 entries to README <br>
-        > - Removes oldest entry automatically <br>
-    </details>
-    <details>
-        <summary><b>🟢 Today: Verified Supabase database connection and RLS policies</b> <code>#database</code> <code>#supabase</code> <code>#backend</code></summary>
-        <br>
-        > **Target:** <code>backend/app/db/supabase.py</code> <br>
-        > **Status:** RLS Verified <br>
-        > - Created mock client <br>
-        > - Tested row-level security policies <br>
-    </details>
-    <details>
-        <summary><b>🟢 Today: Passed Schedule CRUD collision edge-cases</b> <code>#tests</code> <code>#backend</code> <code>#schedule</code></summary>
-        <br>
-        > **Target:** <code>backend/testing/v1/unit/services/schedule/test_schedule_CRUD.py</code> <br>
-        > **Status:** 14/14 Passed ✅ <br>
-        > - Added test coverage for overlapping timeslot requests across semester bounds. <br>
-        > - Verified classroom capacity limits properly reject overbooking with HTTP 409. <br>
-        > - Ensured schedule entity relations serialize cleanly. <br>
-        > <code>pytest backend/testing/v1/unit/services/schedule/ -v</code> <br>
+        <table align="center" border="0">
+            <tr>
+                <td align="left">
+                    <ul>
+                        <li>Introducing the Devlog</li>
+                        <li>Section to show off recent changes to a reader</li>
+                        <li>Without going deeper into code</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
     </details>
     <!-- DEVLOG_ENTRIES_END -->
-    <h5>| This section was created using AI. Code was AI generated but througly reviewed before usage. |</h5>
+    <br>
+    <div style="color: grey; font-size: 0.85em;">
+        <b>Legend:</b> 🟢 Tests / Pass &nbsp;•&nbsp; 🔵 Feature &nbsp;•&nbsp; 🟣 Refactor &nbsp;•&nbsp; 🟡 In Progress &nbsp;•&nbsp; 🔴 Bugfix
+    </div>
+    <div style="color: grey;">
+        <h5 style="display: inline-block;">|This section was created using AI. Code was AI generated but thoroughly reviewed before usage.|</h5>
+    </div>
 </div>
 
 <hr>
