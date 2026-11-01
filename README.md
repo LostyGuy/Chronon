@@ -1,5 +1,5 @@
 <div align='center' class='intro'>
-    <h1>Uni Schedule</h1>
+    <h1>Chronon</h1>
     <div> <!-- Backend -->
         <img style="display: inline;" alt="Static Badge" src="https://img.shields.io/badge/build-3.12.0-blue?style=for-the-badge&logo=python&logoColor=%233776AB&label=python">
         <img style="display: inline;" alt="Static Badge" src="https://img.shields.io/badge/build--blue?style=for-the-badge&logo=pytest&logoColor=%230A9EDC&label=Pytest&color=%230A9EDC">
