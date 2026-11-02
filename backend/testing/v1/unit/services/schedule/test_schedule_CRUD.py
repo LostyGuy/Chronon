@@ -84,6 +84,21 @@ def test_update_schedule(db_session):
         if int(case.get("id", 0)) in (1,2,3):
             assert result is True
 
-@pytest.mark.skip
-def test_delete_schedule():
-    raise NotImplementedError
+
+def test_delete_schedule(db_session):
+    
+    result = v1.delete_schedule(
+        schedule_id= 1,
+        created_by= 1,
+        db_session= db_session
+    )
+    
+    check = db_session.execute(
+        select(
+            models.Schedule.schedule_id
+        ).where(
+            models.Schedule.schedule_id == 1
+        )
+    ).one_or_none()
+
+    assert result is True and check is None

@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 import backend.app.v1.services as services
 import backend.connection.v1.models as models
@@ -63,6 +63,29 @@ def update_schedule(new_name: str | None, new_description: str | None, request_f
             models.Schedule.created_by == user_id
         ).values(
             **update_values
+        )
+    )
+    db_session.commit()
+    
+    return result.rowcount > 0
+
+def delete_schedule(schedule_id: int, created_by: int, db_session) -> bool:
+
+    user_id = db_session.execute(
+            select(
+                models.User.user_id
+            ).where(
+                models.User.user_id == created_by
+            )
+        ).scalar()
+        
+    if not user_id:
+        return False
+    
+    result = db_session.execute(
+        delete(models.Schedule).where(
+            models.Schedule.created_by == created_by,
+            models.Schedule.schedule_id == schedule_id,
         )
     )
     db_session.commit()

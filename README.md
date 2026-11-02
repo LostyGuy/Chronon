@@ -122,6 +122,21 @@
     <br>
     <!-- DEVLOG_ENTRIES_START -->
     <details open>
+        <summary><b>🟢 2026-11-02: Schedule Tests Completed</b><br><code>#tests</code> <code>#backend</code> <code>#schedule</code></summary>
+        <br>
+        <table align="center" border="0">
+            <tr>
+                <td align="left">
+                    <ul>
+                        <li>With this commit all of schedule module is completed</li>
+                        <li>Along with this module following section we're changed: database scheme, error handling, introduction of devlog, seeding the database from .sql files instead of python code</li>
+                        <li>Project name was changed from 'Uni-Schedule' to 'Chronon', which relates to time in many ways</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </details>
+    <details>
         <summary><b>🟣 2026-11-01: Devlog ready to go</b><br><code>#devlog</code></summary>
         <br>
         <table align="center" border="0">

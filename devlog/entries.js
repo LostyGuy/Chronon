@@ -4,6 +4,26 @@
 
 const ENTRIES = [
   {
+    "date": "2026-11-02",
+    "title": "Schedule Tests Completed",
+    "status": "passed",
+    "badge": "12/12 Passed",
+    "tags": [
+      "tests",
+      "backend",
+      "schedule"
+    ],
+    "open": true,
+    "target": "",
+    "bullets": [
+      "With this commit all of schedule module is completed",
+      "Along with this module following section we're changed: database scheme, error handling, introduction of devlog, seeding the database from .sql files instead of python code",
+      "Project name was changed from 'Uni-Schedule' to 'Chronon', which relates to time in many ways"
+    ],
+    "terminal": ""
+  },
+
+  {
     "date": "2026-11-01",
     "title": "Devlog ready to go",
     "status": "refactor",
