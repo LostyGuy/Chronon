@@ -68,3 +68,6 @@ dependencies = [
 
 [tool.fastapi]
 entrypoint = "backend.app.main:app"
+
+[tool.vercel]
+entrypoint = "backend.app.main:app"

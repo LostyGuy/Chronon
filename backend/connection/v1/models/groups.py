@@ -20,11 +20,11 @@ class Group(Base):
         nullable= False,
         unique= True,
     )
-    # created_by: int = Column(
-    #     BigInteger,
-    #     ForeignKey("users.user_id"),
-    #     nullable= False,
-    # )
+    created_by = Column(
+        BigInteger,
+        ForeignKey("users.user_id"),
+        nullable= False,
+    )
     created_at = Column(
         DateTime(timezone= True),
         nullable= False,

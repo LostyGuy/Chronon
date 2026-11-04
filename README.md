@@ -87,7 +87,7 @@
 
 <div align='center' class='testing'>
     <h2>Automated Tests? - YES, come this way</h2>
-    <p>While writing this paragraph there is <b>10</b> valid test. Since the introduction of scalability schema all services are versioned one of them is testing module. Estimated number of `v1` test is <b>39</b>.</p>
+    <p>While writing this paragraph there is <b>12</b> valid test. Since the introduction of scalability schema all services are versioned one of them is testing module. Estimated number of `v1` test is <b>40</b>.</p>
 </div>
 
 <hr>
