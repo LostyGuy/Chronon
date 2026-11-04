@@ -1,7 +1,6 @@
 from fastapi import APIRouter
-from backend.app.v1.routers import auth_login, auth_qr, groups, notifications
-from backend.app.v1.routers import users
-from backend.app.v1.routers import schedules
+from backend.app.v1.routers import auth_login, auth_qr, groups, notifications, schedules, users, entrollment
+
 
 router = APIRouter(prefix="/api/v1")
 
@@ -20,3 +19,6 @@ router.include_router(groups.router, prefix="/groups")
 
 #* ----NOTIFICATIONS----
 router.include_router(notifications.router, prefix="/notifications")
+
+#* ----ENTROLLMENT----
+router.include_router(entrollment.router, prefix="/entrollment")

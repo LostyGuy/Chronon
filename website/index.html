@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chronon — Intelligent University Schedule & Timetable App</title>
+  <meta name="description" content="Say goodbye to messy spreadsheets and unreadable screenshots. Chronon is the modern, real-time university timetable app for students and educators.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --palette-1: #010C22; /* Deepest Midnight / Background */
+      --palette-2: #011C3B; /* Deep Navy / Card & Surface */
+      --palette-3: #01305A; /* Slate Navy / Borders & Dividers */
+      --palette-4: #024F86; /* Cobalt Blue / Primary Interactive */
+      --palette-5: #048AC1; /* Vivid Cyan / Glowing Accents & Badges */
+      
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --accent-glow: rgba(4, 138, 193, 0.35);
+      --cobalt-glow: rgba(2, 79, 134, 0.45);
+      --card-bg: rgba(1, 28, 59, 0.75);
+      --card-border: rgba(1, 48, 90, 0.85);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--palette-1);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(2, 79, 134, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(4, 138, 193, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(1, 48, 90, 0.3) 0%, transparent 60%);
+      background-attachment: fixed;
+    }
+
+    /* Subtle grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(1, 48, 90, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(1, 48, 90, 0.15) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(1, 12, 34, 0.85);
+      border-bottom: 1px solid var(--palette-3);
+      transition: var(--transition);
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--palette-5), var(--palette-4));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .logo-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: rgba(4, 138, 193, 0.15);
+      color: var(--palette-5);
+      border: 1px solid rgba(4, 138, 193, 0.3);
+      border-radius: var(--radius-full);
+      margin-left: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--palette-5);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--palette-4), var(--palette-5));
+      color: #fff;
+      box-shadow: 0 4px 18px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(4, 138, 193, 0.55);
+      filter: brightness(1.08);
+    }
+
+    .btn-outline {
+      background: rgba(1, 28, 59, 0.6);
+      border-color: var(--palette-3);
+      color: var(--text-main);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-outline:hover {
+      background: var(--palette-3);
+      border-color: var(--palette-5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-lg {
+      padding: 14px 30px;
+      font-size: 1.05rem;
+      border-radius: var(--radius-md);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 90px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 16px;
+      background: rgba(1, 48, 90, 0.45);
+      border: 1px solid rgba(4, 138, 193, 0.35);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--palette-5);
+      margin-bottom: 24px;
+      box-shadow: 0 0 16px rgba(4, 138, 193, 0.15);
+    }
+
+    .pulsing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--palette-5);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--palette-5);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(4, 138, 193, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(4, 138, 193, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(4, 138, 193, 0); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #FFFFFF 20%, #7DD3FC 60%, var(--palette-5) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 740px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding-top: 24px;
+      border-top: 1px solid rgba(1, 48, 90, 0.4);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-number {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Hero Showcase Preview */
+    .preview-wrapper {
+      margin-top: 48px;
+      position: relative;
+    }
+
+    .preview-glow {
+      position: absolute;
+      top: -20px;
+      left: 10%;
+      right: 10%;
+      height: 120px;
+      background: radial-gradient(ellipse at center, rgba(4, 138, 193, 0.35), transparent 70%);
+      z-index: 0;
+      filter: blur(40px);
+    }
+
+    .mockup-window {
+      position: relative;
+      z-index: 1;
+      background: var(--palette-2);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(4, 138, 193, 0.15);
+      overflow: hidden;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .window-header {
+      background: rgba(1, 12, 34, 0.7);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--palette-3);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #FF5F56; }
+    .dot-yellow { background: #FFBD2E; }
+    .dot-green { background: #27C93F; }
+
+    .window-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .window-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      background: var(--palette-4);
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    /* Live Interactive Timetable Demo */
+    .app-preview-inner {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      text-align: left;
+      background: linear-gradient(180deg, rgba(1, 28, 59, 0.5) 0%, rgba(1, 12, 34, 0.8) 100%);
+    }
+
+    @media (max-width: 860px) {
+      .app-preview-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .app-sidebar {
+      background: rgba(1, 12, 34, 0.6);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .user-profile-widget {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--palette-3);
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--palette-4), var(--palette-5));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .user-info h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .user-info p {
+      font-size: 0.75rem;
+      color: var(--palette-5);
+      margin: 0;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .quick-stats-box {
+      background: rgba(1, 48, 90, 0.25);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+
+    .quick-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .quick-stat-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .day-pill-list {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .day-pill {
+      flex: 1;
+      padding: 7px 4px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      background: rgba(1, 48, 90, 0.3);
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .day-pill:hover,
+    .day-pill.active {
+      background: var(--palette-4);
+      color: #fff;
+      border-color: var(--palette-5);
+      box-shadow: 0 0 10px rgba(4, 138, 193, 0.3);
+    }
+
+    /* Timetable Grid & Cards */
+    .schedule-main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .schedule-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .schedule-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .schedule-title h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .schedule-filter-group {
+      display: flex;
+      background: rgba(1, 12, 34, 0.5);
+      border: 1px solid var(--palette-3);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--palette-4);
+      color: #fff;
+    }
+
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .class-card {
+      background: rgba(1, 28, 59, 0.65);
+      border: 1px solid var(--palette-3);
+      border-left: 5px solid var(--palette-5);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .class-card:hover {
+      background: rgba(1, 48, 90, 0.45);
+      border-color: var(--palette-5);
+      transform: translateX(4px);
+      box-shadow: 0 4px 18px rgba(4, 138, 193, 0.2);
+    }
+
+    .class-card.urgent {
+      border-left-color: #38BDF8;
+      background: linear-gradient(90deg, rgba(4, 138, 193, 0.15) 0%, rgba(1, 28, 59, 0.65) 100%);
+    }
+
+    .card-time {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .time-start {
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+    }
+
+    .time-end {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .card-body h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(1, 48, 90, 0.5);
+      color: var(--palette-5);
+      border: 1px solid var(--palette-3);
+    }
+
+    .badge-live {
+      background: rgba(4, 138, 193, 0.2);
+      color: #38BDF8;
+      border-color: var(--palette-5);
+      animation: pulse 2s infinite;
+    }
+
+    /* Comparison Section */
+    .section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 60px;
+    }
+
+    .section-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--palette-5);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .comparison-card.bad {
+      border-color: rgba(220, 38, 38, 0.35);
+      background: linear-gradient(180deg, rgba(220, 38, 38, 0.05) 0%, rgba(1, 28, 59, 0.6) 100%);
+    }
+
+    .comparison-card.good {
+      border-color: var(--palette-5);
+      box-shadow: 0 0 30px rgba(4, 138, 193, 0.15);
+      background: linear-gradient(180deg, rgba(2, 79, 134, 0.25) 0%, rgba(1, 28, 59, 0.8) 100%);
+    }
+
+    .comparison-card h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bad h3 { color: #F87171; }
+    .good h3 { color: #38BDF8; }
+
+    .comparison-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .comparison-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .item-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .bad .item-icon {
+      background: rgba(239, 68, 68, 0.2);
+      color: #EF4444;
+    }
+
+    .good .item-icon {
+      background: rgba(4, 138, 193, 0.25);
+      color: var(--palette-5);
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--palette-5);
+      background: rgba(1, 48, 90, 0.35);
+      box-shadow: 0 12px 30px -10px rgba(4, 138, 193, 0.25);
+    }
+
+    .feature-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--palette-3), var(--palette-4));
+      border: 1px solid rgba(4, 138, 193, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 14px rgba(2, 79, 134, 0.3);
+    }
+
+    .feature-icon-box svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--palette-5);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .feature-card h4 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Tech Stack Architecture */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .tech-card {
+      background: rgba(1, 28, 59, 0.5);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .tech-card:hover {
+      border-color: var(--palette-5);
+      background: rgba(1, 48, 90, 0.4);
+      box-shadow: 0 0 18px rgba(4, 138, 193, 0.2);
+    }
+
+    .tech-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-top: 10px;
+      color: #fff;
+    }
+
+    .tech-role {
+      font-size: 0.75rem;
+      color: var(--palette-5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Roadmap Section */
+    .roadmap-timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    @media (max-width: 992px) {
+      .roadmap-timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 580px) {
+      .roadmap-timeline {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .roadmap-phase {
+      background: var(--card-bg);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .roadmap-phase.current {
+      border-color: var(--palette-5);
+      background: linear-gradient(180deg, rgba(2, 79, 134, 0.3) 0%, rgba(1, 28, 59, 0.7) 100%);
+      box-shadow: 0 0 25px rgba(4, 138, 193, 0.25);
+    }
+
+    .phase-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .phase-badge.done {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10B981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .phase-badge.active {
+      background: rgba(4, 138, 193, 0.25);
+      color: #38BDF8;
+      border: 1px solid var(--palette-5);
+    }
+
+    .phase-badge.upcoming {
+      background: rgba(100, 116, 139, 0.15);
+      color: var(--text-dim);
+      border: 1px solid rgba(100, 116, 139, 0.3);
+    }
+
+    .roadmap-phase h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .roadmap-phase p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* FAQ Accordion */
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .faq-item:hover {
+      border-color: var(--palette-5);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 20px 24px;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-icon {
+      font-size: 1.2rem;
+      color: var(--palette-5);
+      transition: transform 0.2s ease;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 24px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--palette-2) 0%, var(--palette-3) 50%, var(--palette-4) 100%);
+      border: 1px solid var(--palette-5);
+      border-radius: var(--radius-lg);
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(1, 12, 34, 0.9), 0 0 35px rgba(4, 138, 193, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(4, 138, 193, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+
+    .cta-banner p {
+      font-size: 1.15rem;
+      color: #E2E8F0;
+      max-width: 620px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .code-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: rgba(1, 12, 34, 0.75);
+      border: 1px solid var(--palette-3);
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--palette-5);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .code-pill:hover {
+      border-color: var(--palette-5);
+      background: var(--palette-1);
+    }
+
+    /* Modal / Alert Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--palette-2);
+      border: 1px solid var(--palette-5);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--palette-3);
+      padding: 60px 0 36px;
+      background: rgba(1, 12, 34, 0.95);
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footer-brand p {
+      color: var(--text-muted);
+      margin-top: 14px;
+      max-width: 320px;
+      font-size: 0.88rem;
+    }
+
+    .footer-col h5 {
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-col a:hover {
+      color: var(--palette-5);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(1, 48, 90, 0.5);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .color-swatch-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <circle cx="12" cy="15" r="2"></circle>
+          </svg>
+        </div>
+        <span>Chronon</span>
+        <span class="brand-badge">Uni-Schedule</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#demo">Live Timetable</a></li>
+        <li><a href="#origin">The Origin</a></li>
+        <li><a href="#stack">Architecture</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/LostyGuy/Uni-Schedule" target="_blank" rel="noreferrer" class="btn btn-outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          GitHub
+        </a>
+        <a href="#demo" class="btn btn-primary">Try Preview</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-pill">
+        <span class="pulsing-dot"></span>
+        <span>Phase 3: Real-Time Event Processing & Alpha Pipeline</span>
+      </div>
+
+      <h1>
+        Never Use a Ruler to Read Your <br>
+        <span class="gradient-text">University Schedule</span> Again.
+      </h1>
+
+      <p>
+        Toss out chaotic Excel sheets, pixelated Paint screenshots, and cryptic group chat PDFs.
+        <strong>Chronon</strong> brings an ultra-clear, real-time timetable experience to students and educators with instant sync, role-based controls, and offline reliability.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Explore Interactive Demo
+        </a>
+        <button class="btn btn-outline btn-lg" onclick="copyCloneCommand()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          git clone repo
+        </button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Clarity & Speed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">39+</span>
+          <span class="stat-label">TDD Test Suite</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">&lt; 50ms</span>
+          <span class="stat-label">FastAPI Response</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">Offline</span>
+          <span class="stat-label">Local Cache Fallback</span>
+        </div>
+      </div>
+
+      <!-- Hero Timetable Preview -->
+      <div class="preview-wrapper" id="demo">
+        <div class="preview-glow"></div>
+        <div class="mockup-window">
+          <div class="window-header">
+            <div class="window-dots">
+              <span class="window-dot dot-red"></span>
+              <span class="window-dot dot-yellow"></span>
+              <span class="window-dot dot-green"></span>
+            </div>
+            <div class="window-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              chronon.app/v1/schedule/student_view
+            </div>
+            <span class="window-badge">Live Interactive App</span>
+          </div>
+
+          <div class="app-preview-inner">
+            <!-- App Sidebar -->
+            <div class="app-sidebar">
+              <div class="user-profile-widget">
+                <div class="user-avatar">MG</div>
+                <div class="user-info">
+                  <h4>Maksym G.</h4>
+                  <p>Computer Science · Year 3</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="sidebar-section-title">Select Day</div>
+                <div class="day-pill-list">
+                  <button class="day-pill" onclick="switchDay('Mon')">Mon</button>
+                  <button class="day-pill active" onclick="switchDay('Tue')">Tue</button>
+                  <button class="day-pill" onclick="switchDay('Wed')">Wed</button>
+                  <button class="day-pill" onclick="switchDay('Thu')">Thu</button>
+                  <button class="day-pill" onclick="switchDay('Fri')">Fri</button>
+                </div>
+              </div>
+
+              <div class="quick-stats-box">
+                <div class="sidebar-section-title">Day Overview</div>
+                <div class="quick-stat-row">
+                  <span style="color: var(--text-muted);">Classes:</span>
+                  <strong id="stat-count" style="color:#fff;">3 Subjects</strong>
+                </div>
+                <div class="quick-stat-row">
+                  <span style="color: var(--text-muted);">Hours:</span>
+                  <strong style="color: var(--palette-5);">4.5 hrs</strong>
+                </div>
+                <div class="quick-stat-row">
+                  <span style="color: var(--text-muted);">Status:</span>
+                  <strong style="color:#34D399;">On Track</strong>
+                </div>
+              </div>
+
+              <div class="quick-stats-box">
+                <div class="sidebar-section-title">Next Up</div>
+                <p style="font-size:0.85rem; font-weight:700; color:#fff;" id="next-class-title">Distributed Systems Lab</p>
+                <p style="font-size:0.75rem; color:var(--palette-5);" id="next-class-room">Room 304B · in 45 mins</p>
+              </div>
+            </div>
+
+            <!-- App Main Schedule -->
+            <div class="schedule-main">
+              <div class="schedule-toolbar">
+                <div class="schedule-title">
+                  <h3 id="current-day-label">Tuesday's Schedule</h3>
+                  <span class="card-badge badge-live">Live Sync</span>
+                </div>
+
+                <div class="schedule-filter-group">
+                  <button class="filter-btn active" onclick="filterClasses('all')">All</button>
+                  <button class="filter-btn" onclick="filterClasses('lecture')">Lectures</button>
+                  <button class="filter-btn" onclick="filterClasses('lab')">Labs</button>
+                  <button class="filter-btn" onclick="filterClasses('seminar')">Seminars</button>
+                </div>
+              </div>
+
+              <!-- Schedule Cards -->
+              <div class="cards-stack" id="classes-container">
+                <!-- Dynamically populated or rendered -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Origin Story -->
+  <section class="section" id="origin">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Why We Built Chronon</span>
+        <h2 class="section-title">The Pain of University Timetables</h2>
+        <p class="section-desc">
+          College schedules were an absolute eyesore. One was made in MS Paint, another in Excel with vertical columns so cramped that students literally used a physical ruler on their monitors just to find out what room they were supposed to be in.
+        </p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card bad">
+          <h3>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            The Evil Spreadsheets
+          </h3>
+          <p style="color: #FDA4AF; font-size: 0.95rem;">
+            The nightmare every university student has suffered through:
+          </p>
+          <ul class="comparison-list">
+            <li class="comparison-item">
+              <span class="item-icon">✕</span>
+              <span><strong>Ruler Required:</strong> Tiny, unaligned rows that force you to drag your finger or a ruler across the glass.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✕</span>
+              <span><strong>Zero Real-time Updates:</strong> If a lecturer changes rooms, you find out only after knocking on an empty lecture hall.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✕</span>
+              <span><strong>Horrible on Mobile:</strong> Pinching and zooming on a blurry JPEG screenshot downloaded from Facebook groups.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✕</span>
+              <span><strong>No Conflict Warning:</strong> Accidental overlaps between seminar cohorts left undetected until week 3.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comparison-card good">
+          <h3>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="9 12 12 15 16 10"></polyline>
+            </svg>
+            The Chronon Solution
+          </h3>
+          <p style="color: #7DD3FC; font-size: 0.95rem;">
+            Designed for human eyes and high-speed campus routines:
+          </p>
+          <ul class="comparison-list">
+            <li class="comparison-item">
+              <span class="item-icon">✓</span>
+              <span><strong>Glanceable Cards:</strong> Time, classroom, teacher, and subject in bold, high-contrast, beautiful typography.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✓</span>
+              <span><strong>Instant Cloud Sync:</strong> Instant schedule mutations broadcasted via FastAPI and Supabase backend.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✓</span>
+              <span><strong>Offline Architecture:</strong> Intelligent local caching ensures your timetable is visible even in subterranean basements.</span>
+            </li>
+            <li class="comparison-item">
+              <span class="item-icon">✓</span>
+              <span><strong>Role-Based Access:</strong> Admin controls for schedule directors, clean read views for students, and group filters.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="section" id="features" style="background: rgba(1, 28, 59, 0.25);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Key Capabilities</span>
+        <h2 class="section-title">Engineered for Academic Precision</h2>
+        <p class="section-desc">
+          Everything you need to master your academic calendar with zero cognitive friction.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <h4>Dynamic Visual Timeline</h4>
+          <p>Chronological breakdown of your day with remaining time indicators, current class highlights, and room numbers prioritized for rapid navigation.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h4>RBAC Security & Privacy</h4>
+          <p>Role-Based Access Control protecting personal student information and allowing only authorized academic staff to publish modifications.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <h4>FastAPI & Supabase Backbone</h4>
+          <p>Blazing asynchronous Python 3.12 endpoints combined with Supabase PostgreSQL and SQLAlchemy ORM for lightning-quick query responses.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+              <rect x="9" y="9" width="6" height="6"></rect>
+              <line x1="9" y1="1" x2="9" y2="4"></line>
+              <line x1="15" y1="1" x2="15" y2="4"></line>
+              <line x1="9" y1="20" x2="9" y2="23"></line>
+              <line x1="15" y1="20" x2="15" y2="23"></line>
+            </svg>
+          </div>
+          <h4>Local + Cloud Double Cache</h4>
+          <p>Minimizes server load while slashing user wait times. If you lose connection in an auditorium, your full weekly schedule remains instant and responsive.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v4l3 3"></path>
+            </svg>
+          </div>
+          <h4>Conflict & Overlap Detection</h4>
+          <p>Automated schedule validation flags collision between concurrent lectures, double-booked professors, or overlapping exam dates.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">
+            <svg viewBox="0 0 24 24">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+          </div>
+          <h4>Cross-Platform Flutter Client</h4>
+          <p>Native-feel experience across Mobile (Android & iOS) and Progressive Web Apps. One responsive codebase with smooth 60fps interaction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual Concept Preview -->
+  <section class="section" id="visual-concept">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Design Blueprint</span>
+        <h2 class="section-title">Visual Concept & Interface</h2>
+        <p class="section-desc">
+          Crafted to prioritize readability, fast subject identification, and intuitive class transitions.
+        </p>
+      </div>
+
+      <div style="max-width: 900px; margin: 0 auto; background: var(--palette-2); border: 1px solid var(--palette-3); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(4, 138, 193, 0.15); text-align: center;">
+        <img src="readme_files/main_page.png" alt="Chronon App Main Page Visual Concept" style="max-width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--palette-3);" onerror="this.style.display='none';">
+        <p style="margin-top: 14px; font-size: 0.85rem; color: var(--palette-5); font-family: 'JetBrains Mono', monospace;">
+          Visual Concept Blueprint — Mobile & Responsive Layout
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Architecture -->
+  <section class="section" id="stack">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Under The Hood</span>
+        <h2 class="section-title">Built with Battle-Tested Technologies</h2>
+        <p class="section-desc">
+          Crafted with modern Python backend standards, Test-Driven Development (TDD), and cross-platform Flutter tooling.
+        </p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div style="font-size:2rem;">🐍</div>
+          <div class="tech-name">Python 3.12</div>
+          <div class="tech-role">Core Engine</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">⚡</div>
+          <div class="tech-name">FastAPI</div>
+          <div class="tech-role">Async API Framework</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🐘</div>
+          <div class="tech-name">PostgreSQL</div>
+          <div class="tech-role">Supabase Database</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🛡️</div>
+          <div class="tech-name">SQLAlchemy</div>
+          <div class="tech-role">Database ORM</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🎯</div>
+          <div class="tech-name">Flutter</div>
+          <div class="tech-role">Mobile & Web UI</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🐳</div>
+          <div class="tech-name">Docker</div>
+          <div class="tech-role">Mock DB & Container</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🧪</div>
+          <div class="tech-name">Pytest (TDD)</div>
+          <div class="tech-role">Automated Tests</div>
+        </div>
+        <div class="tech-card">
+          <div style="font-size:2rem;">🔑</div>
+          <div class="tech-name">OAuth2 & RBAC</div>
+          <div class="tech-role">Identity & Security</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Development Roadmap -->
+  <section class="section" id="roadmap" style="background: rgba(1, 28, 59, 0.25);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Test-Driven Roadmap</span>
+        <h2 class="section-title">Phases of Development</h2>
+        <p class="section-desc">
+          Rigorous progression from relational modeling to public deployment.
+        </p>
+      </div>
+
+      <div class="roadmap-timeline">
+        <div class="roadmap-phase">
+          <span class="phase-badge done">Phase 1 · Complete</span>
+          <h4>Structure & Models</h4>
+          <p>Database schema design, SQLAlchemy ORM mappings, base migrations, and web frontend architecture connection.</p>
+        </div>
+
+        <div class="roadmap-phase">
+          <span class="phase-badge done">Phase 2 · Complete</span>
+          <h4>RBAC & Security</h4>
+          <p>Role-Based Access Control, personal student data encryption, User CRUD, and responsive schedule layout.</p>
+        </div>
+
+        <div class="roadmap-phase current">
+          <span class="phase-badge active">Phase 3 · Active</span>
+          <h4>Event Operations</h4>
+          <p>Real-time operations on schedule mutations, automated conflict detection, calendar feeds, and end-to-end polish.</p>
+        </div>
+
+        <div class="roadmap-phase">
+          <span class="phase-badge upcoming">Phase 4 · Upcoming</span>
+          <h4>Public Release</h4>
+          <p>Final input security audits, endpoint locks, Google Play Alpha release, and campus pilot onboarding.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Got Questions?</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">Everything you need to know about Chronon.</p>
+      </div>
+
+      <div class="faq-container">
+        <div class="faq-item open">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Can I use Chronon when I don't have internet access on campus?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            Yes! Chronon uses an offline-first caching layer. Your full timetable is stored locally on your device, allowing you to open your schedule in basement lecture halls and bomb shelter auditoriums without missing a beat.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>How does Chronon prevent schedule overlap conflicts?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            The FastAPI backend runs validation algorithms on every event mutation. If a professor or room is already booked for a specific time slot, or if two mandatory group sessions collide, the system immediately rejects the overlap and warns the admin.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Is Chronon open-source?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            Yes, Chronon is fully open-source and hosted on GitHub under an open license. You can inspect the code, contribute features, or deploy an instance for your own student union or university.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>What platforms are supported?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            Chronon is built using Flutter for the frontend, which compiles natively to Android, iOS, and modern desktop web browsers, alongside the high-performance FastAPI Python backend.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Banner -->
+  <section class="section" style="padding-top: 20px;">
+    <div class="container">
+      <div class="cta-banner">
+        <h2>Ready for a Human-Friendly Schedule?</h2>
+        <p>
+          Experience clean, stress-free academic scheduling. Star the repository, check out the source code, or join the testing group.
+        </p>
+        <div class="cta-actions">
+          <a href="https://github.com/LostyGuy/Uni-Schedule" target="_blank" rel="noreferrer" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            Star on GitHub
+          </a>
+          <button class="code-pill" onclick="copyCloneCommand()">
+            <span>$ git clone https://github.com/LostyGuy/Uni-Schedule.git</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Notification message</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="12" cy="15" r="2"></circle>
+              </svg>
+            </div>
+            <span>Chronon</span>
+          </a>
+          <p>
+            An intelligent schedule & event management system designed to rescue college students from horrific spreadsheets.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#demo">Live Demo</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#origin">The Origin</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Architecture</h5>
+          <ul>
+            <li><a href="#stack">FastAPI Backend</a></li>
+            <li><a href="#stack">Supabase / Postgres</a></li>
+            <li><a href="#stack">Flutter Frontend</a></li>
+            <li><a href="#stack">Docker Setup</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Community</h5>
+          <ul>
+            <li><a href="https://github.com/LostyGuy/Uni-Schedule" target="_blank" rel="noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/LostyGuy/Uni-Schedule/issues" target="_blank" rel="noreferrer">Issue Tracker</a></li>
+            <li><a href="https://github.com/LostyGuy/Uni-Schedule/pulls" target="_blank" rel="noreferrer">Pull Requests</a></li>
+            <li><a href="https://coderabbit.ai" target="_blank" rel="noreferrer">CodeRabbit Reviews</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 Chronon (Uni-Schedule). Open source software.
+        </div>
+        <div class="color-swatch-bar">
+          <span style="font-size:0.8rem; margin-right: 6px;">Palette:</span>
+          <span class="swatch" style="background:#010C22;" title="#010C22"></span>
+          <span class="swatch" style="background:#011C3B;" title="#011C3B"></span>
+          <span class="swatch" style="background:#01305A;" title="#01305A"></span>
+          <span class="swatch" style="background:#024F86;" title="#024F86"></span>
+          <span class="swatch" style="background:#048AC1;" title="#048AC1"></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Timetable Logic -->
+  <script>
+    // Mock Schedule Data for the interactive preview
+    const SCHEDULE_DATA = {
+      Mon: [
+        { id: 1, type: 'lecture', start: '08:30', end: '10:00', subject: 'Discrete Mathematics', room: 'Hall A-102', teacher: 'Dr. Nowak', isCurrent: false },
+        { id: 2, type: 'lab', start: '10:15', end: '11:45', subject: 'Computer Networks Lab', room: 'Lab 204', teacher: 'Prof. Kowalski', isCurrent: false },
+        { id: 3, type: 'seminar', start: '12:30', end: '14:00', subject: 'Academic English & Writing', room: 'Room 110', teacher: 'Mgr. Smith', isCurrent: false }
+      ],
+      Tue: [
+        { id: 4, type: 'lecture', start: '09:00', end: '10:30', subject: 'Database Systems & SQL', room: 'Auditorium Magna', teacher: 'Prof. Miller', isCurrent: false },
+        { id: 5, type: 'lab', start: '10:45', end: '12:15', subject: 'Distributed Systems & Cloud', room: 'Lab 304B', teacher: 'Dr. Wisniewski', isCurrent: true },
+        { id: 6, type: 'lecture', start: '13:00', end: '14:30', subject: 'Algorithms & Complexity', room: 'Hall B-201', teacher: 'Prof. Adams', isCurrent: false }
+      ],
+      Wed: [
+        { id: 7, type: 'seminar', start: '10:00', end: '11:30', subject: 'Software Architecture Patterns', room: 'Room 405', teacher: 'Dr. Green', isCurrent: false },
+        { id: 8, type: 'lab', start: '12:00', end: '13:30', subject: 'Operating Systems Kernel Lab', room: 'Lab 102', teacher: 'Ing. Brown', isCurrent: false },
+        { id: 9, type: 'lecture', start: '14:00', end: '15:30', subject: 'Cybersecurity Fundamentals', room: 'Auditorium C', teacher: 'Dr. Clark', isCurrent: false }
+      ],
+      Thu: [
+        { id: 10, type: 'lecture', start: '08:30', end: '10:00', subject: 'Object-Oriented Programming (Dart/Flutter)', room: 'Auditorium B', teacher: 'Dr. Scott', isCurrent: false },
+        { id: 11, type: 'lab', start: '10:15', end: '11:45', subject: 'Mobile App Development Lab', room: 'Lab 301', teacher: 'Mgr. Evans', isCurrent: false }
+      ],
+      Fri: [
+        { id: 12, type: 'seminar', start: '09:00', end: '10:30', subject: 'Engineering Ethics & Law', room: 'Room 205', teacher: 'Dr. Taylor', isCurrent: false },
+        { id: 13, type: 'lab', start: '11:00', end: '13:00', subject: 'Team Project Consultation', room: 'Innovation Lab', teacher: 'Prof. Miller', isCurrent: false }
+      ]
+    };
+
+    let currentDay = 'Tue';
+    let currentFilter = 'all';
+
+    function renderClasses() {
+      const container = document.getElementById('classes-container');
+      const dayClasses = SCHEDULE_DATA[currentDay] || [];
+      
+      const filtered = dayClasses.filter(c => {
+        if (currentFilter === 'all') return true;
+        return c.type === currentFilter;
+      });
+
+      // Update overview counts
+      document.getElementById('stat-count').innerText = `${dayClasses.length} Subject${dayClasses.length !== 1 ? 's' : ''}`;
+      
+      const currentOrNext = dayClasses.find(c => c.isCurrent) || dayClasses[0];
+      if (currentOrNext) {
+        document.getElementById('next-class-title').innerText = currentOrNext.subject;
+        document.getElementById('next-class-room').innerText = `${currentOrNext.room} · ${currentOrNext.start}`;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: var(--text-dim); background: rgba(1, 12, 34, 0.4); border-radius: var(--radius-sm);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.6;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <p>No ${currentFilter}s scheduled for this day.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const typeBadgeText = item.type.toUpperCase();
+        const urgentClass = item.isCurrent ? 'urgent' : '';
+        const badgeLive = item.isCurrent 
+          ? `<span class="card-badge badge-live">In Progress</span>` 
+          : `<span class="card-badge">${typeBadgeText}</span>`;
+
+        return `
+          <div class="class-card ${urgentClass}" onclick="showCardDetails('${item.subject}', '${item.room}', '${item.start} - ${item.end}', '${item.teacher}')">
+            <div class="card-time">
+              <span class="time-start">${item.start}</span>
+              <span class="time-end">until ${item.end}</span>
+            </div>
+            <div class="card-body">
+              <h4>${item.subject}</h4>
+              <div class="card-meta">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  ${item.room}
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  ${item.teacher}
+                </span>
+              </div>
+            </div>
+            <div>
+              ${badgeLive}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function switchDay(day) {
+      currentDay = day;
+      const daysFull = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday' };
+      document.getElementById('current-day-label').innerText = `${daysFull[day]}'s Schedule`;
+      
+      document.querySelectorAll('.day-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.trim() === day);
+      });
+      
+      renderClasses();
+    }
+
+    function filterClasses(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      renderClasses();
+    }
+
+    function showCardDetails(subject, room, time, teacher) {
+      showToast(`Selected: ${subject} (${room}) at ${time}`);
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      item.classList.toggle('open');
+    }
+
+    function copyCloneCommand() {
+      const cmd = "git clone https://github.com/LostyGuy/Uni-Schedule.git";
+      navigator.clipboard.writeText(cmd).then(() => {
+        showToast("Copied to clipboard: git clone https://github.com/LostyGuy/Uni-Schedule.git");
+      }).catch(() => {
+        showToast("Command: " + cmd);
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      renderClasses();
+    });
+  </script>
+</body>
+</html>
