@@ -1,10 +1,19 @@
+import os
+import sys
 import logging as log
 import inspect
 from fastapi import Request
 
+handlers: list[log.Handler] = [log.StreamHandler(sys.stdout)]
+
+if not os.getenv("VERCEL"):
+    try:
+        handlers.append(log.FileHandler("logs.txt", mode="a"))
+    except OSError:
+        pass
+
 log.basicConfig(
-    filename="logs.txt",
-    filemode='a',
+    handlers=handlers,
     level=log.INFO,
     force=True,
 )
