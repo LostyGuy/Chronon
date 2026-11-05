@@ -18,4 +18,4 @@ class EnrollmentSubmission(BaseModel):
             max_length=160
         )
     ] | None = None
-    marketing_emails: bool
+    marketing_box: bool
