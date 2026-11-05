@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse, File
 from fastapi import FastAPI, HTTPException
 from fastapi.templating import Jinja2Templates as J2T
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -11,6 +12,14 @@ from backend.app.v1.error_handling import capture_errors
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://www.chronon.com.pl"],
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
+
 app.include_router(router)
 capture_errors(app)
 
