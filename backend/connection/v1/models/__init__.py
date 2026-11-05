@@ -5,6 +5,7 @@ from .notifications import Notification, Invite
 from .auth import Role
 from .colors import Color
 from .refresh_tokens import RefreshToken
+from .enrollments import EnrollmentForm
 
 __all__ = [
     "User",
@@ -17,4 +18,5 @@ __all__ = [
     "Role",
     "Color",
     "RefreshToken",
+    "EnrollmentForm",
 ]

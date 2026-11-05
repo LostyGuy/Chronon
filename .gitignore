@@ -26,6 +26,10 @@ downloads/
 eggs/
 .eggs/
 lib/
+!frontend/lib/
+!frontend/lib/main.dart
+!frontend/lib/entrolment.dart
+!frontend/lib/chronon_colors.dart
 lib64/
 parts/
 sdist/

@@ -1,13 +1,31 @@
-from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from pydantic import EmailStr
+
+from backend.connection.v1.connection import get_db
+import backend.app.v1.services.enrollments as enrollment
+from backend.app.v1.schemas.enrollments import EnrollmentSubmission
+
+
 
 router = APIRouter()
 
-@router.put("/", response_class=HTMLResponse)
-async def changes_from_calendars():
-    """
-    Retrieve calendar update changes.
-    """
+
+@router.post("/form", status_code=status.HTTP_201_CREATED)
+async def enrollment_form(form: EnrollmentSubmission, db_session: Session = Depends(get_db)) -> dict[str, str]:
     
     
-    raise NotImplementedError
+    name: str = form.name
+    email: EmailStr = form.email
+    university: str | None = form.university
+    marketing_emails: bool = form.marketing_emails
+    
+    enrollment.form_request(
+        name= name,
+        email= email,
+        university= university,
+        marketing_emails= marketing_emails,
+        db_session=db_session,
+    )
+    
+    return {"message": "Your tester registration has been saved."}
