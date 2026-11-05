@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse, FileResponse
+from fastapi import FastAPI, HTTPException
 from fastapi.templating import Jinja2Templates as J2T
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -13,25 +14,26 @@ app = FastAPI()
 app.include_router(router)
 capture_errors(app)
 
-flutter_web_path = Path(__file__).resolve().parent.parent.parent / "frontend" / "build" / "web"
-if flutter_web_path.exists():
-    app.mount("/assets", StaticFiles(directory=flutter_web_path / "assets"), name="assets")
-    # 
+flutter_web_path = (
+    Path(__file__).resolve().parent.parent.parent
+    / "frontend"
+    / "build"
+    / "web"
+)
 
-#----For Web----
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def main_page():
-    """
-    Return a greeting message from the root endpoint.
-    
-    Returns:
-        dict: Dictionary containing the greeting {"Hello": "Hello World"}
-    """
-    app.mount("/", StaticFiles(directory=flutter_web_path, html=True), name="flutter-web")
-    index_page = flutter_web_path /"index.html" 
-    
-    return FileResponse(
-        path=index_page, 
-        status_code=200
+    index_page = flutter_web_path / "index.html"
+    if not index_page.is_file():
+        raise HTTPException(
+            status_code=503,
+            detail="Flutter web build is not available",
+        )
+    return FileResponse(index_page)
+
+if flutter_web_path.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=flutter_web_path, html=True),
+        name="flutter-web",
     )
-#----End For Web----
