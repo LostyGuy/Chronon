@@ -6,7 +6,7 @@ from backend.connection.v1.connection import Base
 class EnrollmentForm(Base):
     __tablename__ = "enrollment_form"
 
-    enrollment_id = Column(
+    enrollment_form_id = Column(
         BigInteger, 
         primary_key=True, 
         nullable=False, 
