@@ -50,7 +50,7 @@ class _EntrolmentPageState extends State<EntrolmentPage> {
           'university': _universityController.text.trim().isEmpty
               ? null
               : _universityController.text.trim(),
-          'marketing_emails': _marketingOptIn,
+          'marketing_box': _marketingOptIn,
         }),
       );
 

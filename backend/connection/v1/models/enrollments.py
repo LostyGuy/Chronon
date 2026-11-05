@@ -25,7 +25,7 @@ class EnrollmentForm(Base):
         String(160), 
         nullable=True,
     )
-    marketing_emails = Column(
+    marketing_box = Column(
         Boolean, 
         nullable=False, 
         server_default="false",
