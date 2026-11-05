@@ -10,7 +10,7 @@ def form_request(name: str, email: str, university: str | None, marketing_box: b
         "name": name,
         "email": email.strip().lower(),
         "university": university.strip() if university and university.strip() else None,
-        "marketing_emails": marketing_box,
+        "marketing_box": marketing_box,
     }
 
     result = db_session.execute(
