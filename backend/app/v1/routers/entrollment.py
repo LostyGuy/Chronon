@@ -18,13 +18,13 @@ async def enrollment_form(form: EnrollmentSubmission, db_session: Session = Depe
     name: str = form.name
     email: EmailStr = form.email
     university: str | None = form.university
-    marketing_box: bool = form.marketing_emails
+    marketing_box: bool = form.marketing_box
     
     enrollment.form_request(
         name= name,
         email= email,
         university= university,
-        marketing_emails= marketing_box,
+        marketing_box= marketing_box,
         db_session=db_session,
     )
     
