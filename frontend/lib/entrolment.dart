@@ -40,7 +40,9 @@ class _EntrolmentPageState extends State<EntrolmentPage> {
 
     try {
       final response = await http.post(
-        Uri.base.resolve('/api/v1/entrollment/form'),
+        Uri.parse(
+          'https://chronon-backend.vercel.app/api/v1/entrollment/form',
+        ),
         headers: const {'Content-Type': 'application/json'},
         body: jsonEncode({
           'name': _nameController.text.trim(),
