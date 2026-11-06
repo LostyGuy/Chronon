@@ -1643,6 +1643,7 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
                     ],
                   ),
                   const Text('© 2026 Chronon (Uni-Schedule). Maksym Knasiecki (LostyGuy). Open-source.', style: TextStyle(color: ChrononColors.textDim, fontSize: 13)),
+                  const Text('lostyguycontacts@gmail.com <- contact me', style: TextStyle(color: ChrononColors.textDim, fontSize: 13)),
                 ],
               ),
               const SizedBox(height: 24),
