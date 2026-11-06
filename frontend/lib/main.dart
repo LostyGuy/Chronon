@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:web/web.dart' as web;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni_schedule/entrolment.dart';
 import 'package:uni_schedule/chronon_colors.dart';
 
@@ -338,7 +339,7 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
       decoration: BoxDecoration(
-        color: ChrononColors.abyss.withOpacity(0.88),
+        color: ChrononColors.abyss.withValues(alpha: 0.88),
         border: const Border(
           bottom: BorderSide(color: ChrononColors.navyBorder, width: 1),
         ),
@@ -769,7 +770,7 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: ChrononColors.abyss.withOpacity(0.6),
+        color: ChrononColors.abyss.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: ChrononColors.navyBorder),
       ),
@@ -975,7 +976,7 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
             padding: const EdgeInsets.all(40),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: ChrononColors.abyss.withOpacity(0.5),
+              color: ChrononColors.abyss.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: ChrononColors.navyBorder),
             ),
@@ -1352,14 +1353,14 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
                 runSpacing: 16,
                 alignment: WrapAlignment.center,
                 children: [
-                  _techCard('🐍', 'Python 3.12', 'Core Engine'),
-                  _techCard('⚡', 'FastAPI', 'Async Framework'),
-                  _techCard('🐘', 'PostgreSQL', 'Supabase Database'),
-                  _techCard('🛡️', 'SQLAlchemy', 'Database ORM'),
-                  _techCard('🎯', 'Flutter', 'Web & Mobile Client'),
-                  _techCard('🐳', 'Docker', 'Mock DB & Container'),
-                  _techCard('🧪', 'Pytest (TDD)', 'Automated Tests'),
-                  _techCard('🔑', 'OAuth2 / RBAC', 'Identity & Security'),
+                  _techCard('lib/photos/python.svg', 'Python 3.12', 'Core Engine'),
+                  _techCard('lib/photos/fastapi.svg', 'FastAPI', 'Async Framework'),
+                  _techCard('lib/photos/postgresql.svg', 'PostgreSQL', 'Supabase Database'),
+                  _techCard('lib/photos/sqlalchemy.svg', 'SQLAlchemy', 'Database ORM'),
+                  _techCard('lib/photos/flutter.svg', 'Flutter', 'Web & Mobile Client'),
+                  _techCard('lib/photos/docker.svg', 'Docker', 'Mock DB & Container'),
+                  _techCard('lib/photos/pytest.svg', 'Pytest (TDD)', 'Automated Tests'),
+                  _techCard('lib/photos/monkeytie.svg', 'OAuth2 / RBAC', 'Identity & Security'),
                 ],
               ),
             ],
@@ -1369,26 +1370,49 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
     );
   }
 
-  Widget _techCard(String emoji, String title, String role) {
-    return Container(
-      width: 150,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      decoration: BoxDecoration(
-        color: ChrononColors.navySurface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ChrononColors.navyBorder),
+  Widget _techCard(String iconAssetPath, String title, String role) {
+  return Container(
+    width: 150,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    decoration: BoxDecoration(
+      color: ChrononColors.navySurface,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: ChrononColors.navyBorder),
+    ),
+    child: Column(
+      children: [
+        SvgPicture.asset(
+        iconAssetPath,
+        width: 26,
+        height: 26,
+        colorFilter: const ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcIn,
+        ),
       ),
-      child: Column(
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 26)),
-          const SizedBox(height: 8),
-          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
-          const SizedBox(height: 4),
-          Text(role, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, color: ChrononColors.cyanAccent)),
-        ],
-      ),
-    );
-  }
+        const SizedBox(height: 8),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          role,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 11,
+            color: ChrononColors.cyanAccent,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   // ---------------------------------------------------------------------------
   // 7. Roadmap
@@ -1443,9 +1467,9 @@ class _ChrononLandingPageState extends State<ChrononLandingPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: badgeColor.withOpacity(0.15),
+                color: badgeColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: badgeColor.withOpacity(0.4)),
+                border: Border.all(color: badgeColor.withValues(alpha: 0.4)),
               ),
               child: Text(badge, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: badgeColor)),
             ),
