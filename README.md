@@ -122,6 +122,21 @@
     <br>
     <!-- DEVLOG_ENTRIES_START -->
     <details open>
+        <summary><b>🔵 2026-11-13: Launch of Chronon Tester Reqruitment</b><br><code>#tests</code> <code>#backend</code> <code>#chronon</code></summary>
+        <br>
+        <table align="center" border="0">
+            <tr>
+                <td align="left">
+                    <ul>
+                        <li>From now on 'Uni-Schedule' - is Chronon.</li>
+                        <li>At www.chronon.com.pl you can sign as a tester. Registration is open till the end of the 2026</li>
+                        <li>Detailed implementation verified and logged.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </details>
+    <details>
         <summary><b>🟢 2026-11-02: Schedule Tests Completed</b><br><code>#tests</code> <code>#backend</code> <code>#schedule</code></summary>
         <br>
         <table align="center" border="0">

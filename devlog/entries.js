@@ -4,6 +4,25 @@
 
 const ENTRIES = [
   {
+    "date": "2026-11-13",
+    "title": "Launch of Chronon Tester Reqruitment",
+    "status": "feature",
+    "badge": "FEATURE",
+    "tags": [
+      "tests",
+      "backend",
+      "chronon"
+    ],
+    "open": true,
+    "target": "",
+    "bullets": [
+      "From now on 'Uni-Schedule' - is Chronon.",
+      "At www.chronon.com.pl you can sign as a tester. Registration is open till the end of the 2026"
+    ],
+    "terminal": ""
+  },
+
+  {
     "date": "2026-11-02",
     "title": "Schedule Tests Completed",
     "status": "passed",
