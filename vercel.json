@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "public/downloads/:path*",
+      "destination": "https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/YOUR_BUCKET/:path*"
+    }
+  ]
+}
