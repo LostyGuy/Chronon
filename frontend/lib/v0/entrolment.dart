@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uni_schedule/chronon_colors.dart';
+import 'package:chronon/v0/chronon_colors.dart';
 
 class EntrolmentPage extends StatefulWidget {
   const EntrolmentPage({super.key});
