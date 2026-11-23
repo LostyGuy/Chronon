@@ -55,19 +55,11 @@ def setup_db():
     #     conn.execute(text("DROP SCHEMA public CASCADE"))
     #     conn.execute(text("CREATE SCHEMA public"))
     #!---- ----
-    # Base.metadata.drop_all(bind=engine)
-    # Base.metadata.create_all(bind=engine)
     session = TestSessionLocal()
     try:
-        # roles = roles_data() # Turn to seed.sql?
-        # users = users_data() # Turn to seed.sql?
-        # session.add_all(roles)
-        # session.add_all(users)
-        # session.commit()
         yield
     finally:
         session.close()
-        # Base.metadata.drop_all(bind=engine, tables=reversed(Base.metadata.sorted_tables))
 
 
 @pytest.fixture

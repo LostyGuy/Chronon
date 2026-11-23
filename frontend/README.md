@@ -1,3 +1,3 @@
-# uni_schedule
+# Chronon
 
 A new Flutter project.
