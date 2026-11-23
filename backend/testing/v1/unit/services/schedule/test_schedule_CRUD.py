@@ -84,7 +84,6 @@ def test_update_schedule(db_session):
         if int(case.get("id", 0)) in (1,2,3):
             assert result is True
 
-
 def test_delete_schedule(db_session):
     
     result = v1.delete_schedule(

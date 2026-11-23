@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 import pytest
 from sqlalchemy import create_engine, text
@@ -39,14 +41,16 @@ MIXED_USERS = [
 engine = create_engine(TEST_DATABASE_URL)
 TestSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
-try:
-    with engine.connect() as conn:
-        pass
-except OperationalError:
-    pytest.exit(
-        "Test database unreachable. Is Supabase Docker running? → supabase start",
-        returncode=1
-    )
+@pytest.fixture
+def database_check():
+    try:
+        with engine.connect() as conn:
+            pass
+    except OperationalError:
+        pytest.exit(
+            "Test database unreachable. Is Supabase Docker running? → supabase start",
+            returncode=1
+        )
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_db():
